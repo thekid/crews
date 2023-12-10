@@ -1,4 +1,4 @@
-<?php
+<?php namespace de\thekid\crews;
 
 use com\mongodb\{MongoConnection, Document, ObjectId};
 use io\redis\RedisProtocol;
@@ -7,6 +7,7 @@ use web\frontend\helpers\{Dates, Functions};
 use web\frontend\{Frontend, AssetsFrom, Handlebars, Get, Post, Delete, Put, View, Param};
 use web\{Application, Handler};
 
+/** Web frontend */
 class App extends Application {
 
   public function routes() {

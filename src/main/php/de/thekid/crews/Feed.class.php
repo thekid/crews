@@ -1,4 +1,4 @@
-<?php
+<?php namespace de\thekid\crews;
 
 use com\mongodb\{MongoConnection, ObjectId};
 use io\redis\RedisProtocol;
@@ -7,6 +7,7 @@ use web\frontend\Handlebars;
 use web\frontend\helpers\{Dates, Functions};
 use websocket\Listeners;
 
+/** WebSockets feed listeners */
 class Feed extends Listeners {
 
   public function serve($events) {
