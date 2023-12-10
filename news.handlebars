@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>News</title>
+  <title>Crews</title>
   <link href="/static/vendor.css" rel="stylesheet">
-  <link href="https://avatars.githubusercontent.com/u/1721237?s=48&v=4" rel="icon">
+  <link href="/static/crews.png" rel="icon">
   <style type="text/css">
     * {
       font-family: 'Lato', sans-serif;
@@ -84,7 +84,7 @@
   </style>
 </head>
 <body {{#with request.values.token}}hx-headers='{"X-CSRF-Token": "{{.}}"}'{{/with}}>
-  <h1>News 🐝</h1>
+  <h1>Crews ⛵</h1>
 
   <form hx-post="/posts" hx-target="#posts" hx-swap="afterbegin" hx-on::after-request="this.reset()">
     <div>
