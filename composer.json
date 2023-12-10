@@ -12,6 +12,6 @@
     "dev": "xp -supervise web -m develop -a 0.0.0.0:8080 de.thekid.crews.App",
     "serve": "xp -supervise web -a 0.0.0.0:8080 de.thekid.crews.App",
     "feed": "xp -supervise ws -a 0.0.0.0:8081 de.thekid.crews.Feed",
-    "post-update-cmd": "xp bundle"
+    "post-update-cmd": "xp bundle src/main/webapp/static"
   }
 }

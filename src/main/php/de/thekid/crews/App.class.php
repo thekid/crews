@@ -77,7 +77,7 @@ class App extends Application {
       ])
     ]);
     return [
-      '/static' => new AssetsFrom($this->environment->webroot()),
+      '/static' => new AssetsFrom($this->environment->path('src/main/webapp')),
       '/'       => new Frontend($impl, $templates)
     ];
   }
