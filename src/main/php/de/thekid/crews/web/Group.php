@@ -5,13 +5,13 @@ use io\redis\RedisProtocol;
 use util\Date;
 use web\frontend\{Handler, Get, Post, Delete, Put, View, Param};
 
-#[Handler('/')]
-class Index {
+#[Handler('/group/{group}')]
+class Group {
 
   public function __construct(private Database $db, private RedisProtocol $pub) { }
 
   private function post(ObjectId $id, string $view= 'post') {
-    return View::named('index')->fragment($view)->with($this->db->collection('posts')
+    return View::named('group')->fragment($view)->with($this->db->collection('posts')
       ->find($id)
       ->first()
       ->properties()
@@ -24,7 +24,7 @@ class Index {
       ['$sort' => ['created' => -1]],
       ['$limit' => 20],
     ]);
-    return View::named('index')->with(['posts' => $posts->all()]);
+    return View::named('group')->with(['posts' => $posts->all()]);
   }
 
   #[Post('/posts')]

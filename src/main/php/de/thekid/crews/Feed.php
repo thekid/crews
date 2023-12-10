@@ -27,15 +27,15 @@ class Feed extends Listeners {
           $post= $posts->find(new ObjectId($id))->first();
           return sprintf(
             '<div id="posts" hx-swap-oob="afterbegin">%s</div>',
-            $templates->render('index', $post->properties(), 'post')
+            $templates->render('group', $post->properties(), 'post')
           );
         },
         'update' => {
           $post= $posts->find(new ObjectId($id))->first();
-          return $templates->render('index', $post->properties() + ['swap' => 'outerHTML'], 'post');
+          return $templates->render('group', $post->properties() + ['swap' => 'outerHTML'], 'post');
         },
         'delete' => {
-          return $templates->render('index', ['_id' => $id, 'swap' => 'delete'], 'post');
+          return $templates->render('group', ['_id' => $id, 'swap' => 'delete'], 'post');
         },
       };
 
