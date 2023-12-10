@@ -10,8 +10,8 @@ class App extends Application {
 
   public function routes() {
     $conn= new MongoConnection($this->environment->variable('MONGO_URI'));
-    $db= $conn->database($this->environment->variable('MONGO_DB'));
     $pub= new RedisProtocol($this->environment->variable('REDIS_URI'));
+    $db= $conn->database($this->environment->variable('MONGO_DB'));
 
     return [
       '/static' => new AssetsFrom($this->environment->path('src/main/webapp')),

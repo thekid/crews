@@ -10,9 +10,9 @@ class Feed extends Listeners {
 
   public function serve($events) {
     $conn= new MongoConnection($this->environment->variable('MONGO_URI'));
-    $db= $conn->database($this->environment->variable('MONGO_DB'));
     $sub= new RedisProtocol($this->environment->variable('REDIS_URI'));
     $templates= new Templating(new Path('src/main/handlebars'));
+    $db= $conn->database($this->environment->variable('MONGO_DB'));
 
     // Broadcast messages to all connected clients
     $posts= $db->collection('posts');
