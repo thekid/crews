@@ -73,12 +73,12 @@ class App extends Application {
     $templates= new Handlebars('.', [
       new Dates(null),
       new Functions([
-        'emoji' => fn($node, $context, $options) => preg_match('/^\\p{So}+$/u', $options[0])
+        'emoji' => fn($node, $context, $options) => preg_match('/^\\p{So}+$/u', $options[0]),
       ])
     ]);
     return [
       '/static' => new AssetsFrom($this->environment->path('src/main/webapp')),
-      '/'       => new Frontend($impl, $templates)
+      '/'       => new Frontend($impl, $templates),
     ];
   }
 }

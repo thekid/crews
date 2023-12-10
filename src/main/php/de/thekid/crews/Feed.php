@@ -27,29 +27,24 @@ class Feed extends Listeners {
     $events->add($sub->socket(), function() use($sub, $posts, $templates) {
       [$type, $channel, $message]= $sub->receive();
 
-      sscanf($message, '%[^=]=%[0-9a-f]', $action, $id);
-      switch ($action) {
-        case 'insert':
+      // Message is formatted e.g. as "insert=65758e56b0d77810acc80ded"
+      [$action, $id]= explode('=', $message, 2);
+      $fragment= match ($action) {
+        'insert' => {
           $post= $posts->find(new ObjectId($id))->first();
-          $fragment= sprintf(
+          return sprintf(
             '<div id="posts" hx-swap-oob="afterbegin">%s</div>',
             $templates->render('news', $post->properties(), 'post')
           );
-          break;
-
-        case 'update':
+        },
+        'update' => {
           $post= $posts->find(new ObjectId($id))->first();
-          $fragment= $templates->render('news', $post->properties() + ['swap' => 'outerHTML'], 'post');
-          break;
-
-        case 'delete':
-          $fragment= $templates->render('news', ['_id' => $id, 'swap' => 'delete'], 'post');
-          break;
-
-        default:
-          // Ignore
-          return;
-      }
+          return $templates->render('news', $post->properties() + ['swap' => 'outerHTML'], 'post');
+        },
+        'delete' => {
+          return $templates->render('news', ['_id' => $id, 'swap' => 'delete'], 'post');
+        },
+      };
 
       foreach ($this->connections as $connection) {
         $connection->send($fragment);

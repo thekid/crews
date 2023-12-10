@@ -6,6 +6,7 @@
     "xp-forge/mongodb": "^2.1",
     "xp-forge/redis": "^1.0",
     "xp-framework/networking": "^10.0",
+    "xp-framework/compiler": "^8.17",
     "php": ">=8.0.0"
   },
   "scripts": {
