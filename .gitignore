@@ -1,0 +1,4 @@
+src/main/webapp/static/vendor.*
+src/main/webapp/static/*ttf*
+vendor/
+composer.lock
