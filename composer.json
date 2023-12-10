@@ -1,0 +1,17 @@
+{
+  "require": {
+    "xp-forge/handlebars-templates": "^3.1",
+    "xp-forge/frontend": "^5.6",
+    "xp-forge/websockets": "^2.1",
+    "xp-forge/mongodb": "^2.1",
+    "xp-forge/redis": "^1.0",
+    "xp-framework/networking": "^10.0",
+    "php": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "xp -supervise web -m develop -a 0.0.0.0:8080 App",
+    "serve": "xp -supervise web -a 0.0.0.0:8080 App",
+    "feed": "xp -supervise ws -a 0.0.0.0:8081 Feed",
+    "post-update-cmd": "xp bundle"
+  }
+}

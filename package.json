@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "htmx.org": "^1.9"
+  },
+  "bundles": {
+    "vendor": {"htmx.org": ["dist/htmx.min.js", "dist/ext/ws.js"], "fonts://display=swap": "Lato:wght@300"}
+  }
+}
