@@ -14,7 +14,7 @@ class Feed extends Listeners {
     $conn= new MongoConnection($this->environment->variable('MONGO_URI'));
     $db= $conn->database($this->environment->variable('MONGO_DB'));
     $sub= new RedisProtocol($this->environment->variable('REDIS_URI'));
-    $templates= new Handlebars('.', [
+    $templates= new Handlebars('src/main/handlebars', [
       new Dates(null),
       new Functions([
         'emoji' => fn($node, $context, $options) => preg_match('/^\\p{So}+$/u', $options[0])
@@ -34,15 +34,15 @@ class Feed extends Listeners {
           $post= $posts->find(new ObjectId($id))->first();
           return sprintf(
             '<div id="posts" hx-swap-oob="afterbegin">%s</div>',
-            $templates->render('news', $post->properties(), 'post')
+            $templates->render('index', $post->properties(), 'post')
           );
         },
         'update' => {
           $post= $posts->find(new ObjectId($id))->first();
-          return $templates->render('news', $post->properties() + ['swap' => 'outerHTML'], 'post');
+          return $templates->render('index', $post->properties() + ['swap' => 'outerHTML'], 'post');
         },
         'delete' => {
-          return $templates->render('news', ['_id' => $id, 'swap' => 'delete'], 'post');
+          return $templates->render('index', ['_id' => $id, 'swap' => 'delete'], 'post');
         },
       };
 

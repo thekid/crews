@@ -20,7 +20,7 @@ class App extends Application {
       public function __construct(private $db, private $pub) { }
 
       private function post(ObjectId $id, string $view= 'post') {
-        return View::named('news')->fragment($view)->with($this->db->collection('posts')
+        return View::named('index')->fragment($view)->with($this->db->collection('posts')
           ->find($id)
           ->first()
           ->properties()
@@ -33,7 +33,7 @@ class App extends Application {
           ['$sort' => ['created' => -1]],
           ['$limit' => 20],
         ]);
-        return View::named('news')->with(['posts' => $posts->all()]);
+        return View::named('index')->with(['posts' => $posts->all()]);
       }
 
       #[Post('/posts')]
@@ -70,7 +70,7 @@ class App extends Application {
       }
     };
 
-    $templates= new Handlebars('.', [
+    $templates= new Handlebars($this->environment->path('src/main/handlebars'), [
       new Dates(null),
       new Functions([
         'emoji' => fn($node, $context, $options) => preg_match('/^\\p{So}+$/u', $options[0]),
