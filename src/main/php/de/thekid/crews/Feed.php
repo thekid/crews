@@ -1,10 +1,8 @@
 <?php namespace de\thekid\crews;
 
 use com\mongodb\{MongoConnection, ObjectId};
+use io\Path;
 use io\redis\RedisProtocol;
-use lang\Throwable;
-use web\frontend\Handlebars;
-use web\frontend\helpers\{Dates, Functions};
 use websocket\Listeners;
 
 /** WebSockets feed listeners */
@@ -14,12 +12,7 @@ class Feed extends Listeners {
     $conn= new MongoConnection($this->environment->variable('MONGO_URI'));
     $db= $conn->database($this->environment->variable('MONGO_DB'));
     $sub= new RedisProtocol($this->environment->variable('REDIS_URI'));
-    $templates= new Handlebars('src/main/handlebars', [
-      new Dates(null),
-      new Functions([
-        'emoji' => fn($node, $context, $options) => preg_match('/^\\p{So}+$/u', $options[0])
-      ])
-    ]);
+    $templates= new Templating(new Path('src/main/handlebars'));
 
     // Broadcast messages to all connected clients
     $posts= $db->collection('posts');
