@@ -21,14 +21,14 @@ class Index {
     return View::named('index')->with(['groups' => $groups->all()]);
   }
 
-  #[Get('/create')]
-  public function show() {
-    return View::named('index#create');
+  #[Get('/dialog/{dialog}')]
+  public function show($dialog) {
+    return View::named('index')->fragment($dialog);
   }
 
-  #[Delete('/create')]
-  public function hide() {
-    return View::empty()->status(202);
+  #[Delete('/dialog/{dialog}')]
+  public function hide($dialog) {
+    return View::empty()->status(201);
   }
 
   #[Post('/create')]

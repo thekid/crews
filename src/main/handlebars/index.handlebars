@@ -3,7 +3,7 @@
   {{#*inline "content"}}
     <div class="page-actions">
       <div class="buttons">
-        <button hx-get="/create" hx-target="body" hx-swap="beforeend">➕ Create</button>
+        <button hx-get="/dialog/create" hx-target="body" hx-swap="beforeend">➕ Create</button>
       </div>
     </div>
 
@@ -40,7 +40,7 @@
           </div>
           <div>
             <button type="submit" hx-disabled-elt="this">Create</button>
-            <button value="cancel" hx-delete="/create" hx-target="closest dialog" hx-swap="delete">Cancel</button>
+            <button value="cancel" hx-delete="/dialog/create" hx-target="closest dialog" hx-swap="delete">Cancel</button>
           </div>
         </form>
       {{/fragment}}
