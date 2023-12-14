@@ -1,6 +1,8 @@
 {{#> layout}}
   {{#*inline "title"}}{{group.name}}{{/inline}}
   {{#*inline "content"}}
+    <p>{{group.description}}</p>
+
     <form hx-post="/group/{{group._id}}/posts" hx-target="#posts" hx-swap="afterbegin" hx-on::after-request="this.reset()">
       <div>
         <label for="body">What's on your mind?</label>
