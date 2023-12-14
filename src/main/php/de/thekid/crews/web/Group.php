@@ -37,7 +37,7 @@ class Group {
       'body'    => $body,
       'created' => Date::now(),
     ]));
-    $this->pub->command('PUBLISH', 'messages', "insert={$insert->id()}");
+    $this->pub->command('PUBLISH', $group, "insert={$insert->id()}");
     return View::empty()->status(204); // $this->post($insert->id());
   }
 
@@ -49,7 +49,7 @@ class Group {
   #[Delete('/posts/{id}')]
   public function delete(string $group, string $id) {
     $this->db->collection('posts')->delete(new ObjectId($id));
-    $this->pub->command('PUBLISH', 'messages', "delete={$id}");
+    $this->pub->command('PUBLISH', $group, "delete={$id}");
     return View::empty()->status(204); // 202
   }
 
@@ -60,7 +60,7 @@ class Group {
       'body'    => $body,
       'updated' => Date::now(),
     ]]);
-    $this->pub->command('PUBLISH', 'messages', "update={$id}");
+    $this->pub->command('PUBLISH', $group, "update={$id}");
     return View::empty()->status(204); // $this->post($post);
   }
 }
