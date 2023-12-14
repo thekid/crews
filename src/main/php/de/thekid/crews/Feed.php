@@ -39,6 +39,7 @@ class Feed extends Listeners {
         unset($this->subscribers[$group][$conn->id()]);
         if (empty($this->subscribers[$group])) {
           $this->events->unsubscribe($group);
+          unset($this->subscribers[$group]);
         }
       }
     };
