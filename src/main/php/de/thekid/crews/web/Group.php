@@ -1,14 +1,14 @@
 <?php namespace de\thekid\crews\web;
 
 use com\mongodb\{Database, Document, ObjectId};
-use io\redis\RedisProtocol;
+use de\thekid\crews\Events;
 use util\Date;
 use web\frontend\{Handler, Get, Post, Delete, Put, View, Param};
 
 #[Handler('/group/{group}')]
 class Group {
 
-  public function __construct(private Database $db, private RedisProtocol $pub) { }
+  public function __construct(private Database $db, private Events $events) { }
 
   private function post(ObjectId $id, string $view= 'post') {
     return View::named('group')->fragment($view)->with($this->db->collection('posts')
@@ -37,7 +37,7 @@ class Group {
       'body'    => $body,
       'created' => Date::now(),
     ]));
-    $this->pub->command('PUBLISH', $group, "insert={$insert->id()}");
+    $this->events->publish($group, ['insert' => $insert->id()]);
     return View::empty()->status(204); // $this->post($insert->id());
   }
 
@@ -49,7 +49,7 @@ class Group {
   #[Delete('/posts/{id}')]
   public function delete(string $group, string $id) {
     $this->db->collection('posts')->delete(new ObjectId($id));
-    $this->pub->command('PUBLISH', $group, "delete={$id}");
+    $this->events->publish($group, ['delete' => $id]);
     return View::empty()->status(204); // 202
   }
 
@@ -60,7 +60,7 @@ class Group {
       'body'    => $body,
       'updated' => Date::now(),
     ]]);
-    $this->pub->command('PUBLISH', $group, "update={$id}");
+    $this->events->publish($group, ['update' => $id]);
     return View::empty()->status(204); // $this->post($post);
   }
 }

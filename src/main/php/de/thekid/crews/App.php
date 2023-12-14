@@ -10,7 +10,7 @@ class App extends Application {
 
   public function routes() {
     $conn= new MongoConnection($this->environment->variable('MONGO_URI'));
-    $pub= new RedisProtocol($this->environment->variable('REDIS_URI'));
+    $pub= new Events(new RedisProtocol($this->environment->variable('REDIS_URI')));
     $db= $conn->database($this->environment->variable('MONGO_DB'));
 
     return [
