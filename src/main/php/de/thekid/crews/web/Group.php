@@ -1,17 +1,21 @@
 <?php namespace de\thekid\crews\web;
 
-use com\mongodb\{Database, Document, ObjectId};
+use com\mongodb\{Database, Collection, Document, ObjectId};
 use de\thekid\crews\Events;
 use util\Date;
 use web\frontend\{Handler, Get, Post, Delete, Put, View, Param};
 
 #[Handler('/group/{group}')]
 class Group {
+  private Collection $groups, $posts;
 
-  public function __construct(private Database $db, private Events $events) { }
+  public function __construct(Database $db, private Events $events) {
+    $this->groups= $db->collection('groups');
+    $this->posts= $db->collection('posts');
+  }
 
   private function post(ObjectId $id, string $view= 'post') {
-    return View::named('group')->fragment($view)->with($this->db->collection('posts')
+    return View::named('group')->fragment($view)->with($this->posts
       ->find($id)
       ->first()
       ->properties()
@@ -21,8 +25,8 @@ class Group {
   #[Get]
   public function index(string $group) {
     $id= new ObjectId($group);
-    $groups= $this->db->collection('groups')->find($id);
-    $posts= $this->db->collection('posts')->aggregate([
+    $groups= $this->groups->find($id);
+    $posts= $this->posts->aggregate([
       ['$match' => ['group' => $id]],
       ['$sort'  => ['created' => -1]],
       ['$limit' => 20],
@@ -32,13 +36,13 @@ class Group {
 
   #[Post('/posts')]
   public function create(string $group, #[Param] string $body) {
-    $insert= $this->db->collection('posts')->insert(new Document([
+    $insert= $this->posts->insert(new Document([
       'group'   => new ObjectId($group),
       'body'    => $body,
       'created' => Date::now(),
     ]));
     $this->events->publish($group, ['insert' => $insert->id()]);
-    return View::empty()->status(204); // $this->post($insert->id());
+    return View::empty()->status(204);
   }
 
   #[Get('/posts/{id}/{view}')]
@@ -48,19 +52,19 @@ class Group {
 
   #[Delete('/posts/{id}')]
   public function delete(string $group, string $id) {
-    $this->db->collection('posts')->delete(new ObjectId($id));
+    $this->posts->delete(new ObjectId($id));
     $this->events->publish($group, ['delete' => $id]);
-    return View::empty()->status(204); // 202
+    return View::empty()->status(204);
   }
 
   #[Put('/posts/{id}')]
   public function update(string $group, string $id, #[Param] string $body) {
     $post= new ObjectId($id);
-    $this->db->collection('posts')->update($post, ['$set' => [
+    $this->posts->update($post, ['$set' => [
       'body'    => $body,
       'updated' => Date::now(),
     ]]);
     $this->events->publish($group, ['update' => $id]);
-    return View::empty()->status(204); // $this->post($post);
+    return View::empty()->status(204);
   }
 }
