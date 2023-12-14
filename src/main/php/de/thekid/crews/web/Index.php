@@ -2,7 +2,7 @@
 
 use com\mongodb\{Database, Collection, Document};
 use util\Date;
-use web\frontend\{Handler, Get, Post, Param, View};
+use web\frontend\{Handler, Get, Delete, Post, Param, View};
 
 #[Handler('/')]
 class Index {
