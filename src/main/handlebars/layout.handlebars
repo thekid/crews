@@ -98,10 +98,18 @@
       opacity: 1;
       transition: opacity 100ms ease-in-out;
     }
+
+    .breadcrumb a {
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body {{#with request.values.token}}hx-headers='{"X-CSRF-Token": "{{.}}"}'{{/with}}>
-  <h1>Crews ⛵ &raquo; {{> title}}</h1>
+  <h1 class="breadcrumb"><a href="/">Crews</a> ⛵ &raquo; <a href="{{request.uri.path}}">{{> title}}</a></h1>
 
   {{> content}}
 
