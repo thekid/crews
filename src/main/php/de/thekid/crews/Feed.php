@@ -43,26 +43,20 @@ class Feed extends Listeners {
       }
     };
 
-    // Broadcast messages to all connected clients
+    // Render a given post
     $posts= $db->collection('posts');
-    $listeners->add($events->socket(), function() use($events, $posts, $templates, $listener) {
+    $render= function($postId, $context= []) use($posts, $templates) {
+      $postId && $context+= $posts->find(new ObjectId($postId))->first()->properties();
+      return $templates->render('group', $context, 'post');
+    };
+
+    // Broadcast messages to all connected clients
+    $listeners->add($events->socket(), function() use($events, $render, $listener) {
       foreach ($events->receive() as $group => $event) {
         $fragment= match (key($event)) {
-          'insert' => sprintf('<div id="posts" hx-swap-oob="afterbegin">%s</div>', $templates->render(
-            'group',
-            $posts->find(new ObjectId(current($event)))->first()->properties(),
-            'post'
-          )),
-          'update' => $templates->render(
-            'group',
-            $posts->find(new ObjectId(current($event)))->first()->properties() + ['swap' => 'outerHTML'],
-            'post'
-          ),
-          'delete' => $templates->render(
-            'group',
-            ['_id' => current($event), 'swap' => 'delete'],
-            'post'
-          ),
+          'insert' => sprintf('<div id="posts" hx-swap-oob="afterbegin">%s</div>', $render(current($event))),
+          'update' => $render(current($event), ['swap' => 'outerHTML']),
+          'delete' => $render(null, ['_id' => current($event), 'swap' => 'delete']),
         };
 
         foreach ($listener->subscribers[$group] as $connection) {
