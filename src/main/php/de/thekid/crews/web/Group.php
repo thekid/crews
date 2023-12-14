@@ -34,6 +34,26 @@ class Group {
     return View::named('group')->with(['group' => $groups->first(), 'posts' => $posts->all()]);
   }
 
+  #[Get('/{view}')]
+  public function group(string $group, string $view) {
+    return View::named('group')->fragment($view)->with($this->groups
+      ->find(new ObjectId($group))
+      ->first()
+      ->properties()
+    );
+  }
+
+  #[Put]
+  public function describe(string $group, #[Param] string $description) {
+    $result= $this->groups->run('findAndModify', [
+      'query'  => ['_id' => new ObjectId($group)],
+      'update' => ['$set' => ['description' => $description]],
+      'new'    => true,  // Return modified document
+      'upsert' => false,
+    ]);
+    return View::named('group#description')->with($result->value()['value']);
+  }
+
   #[Post('/posts')]
   public function create(string $group, #[Param] string $body) {
     $insert= $this->posts->insert(new Document([
