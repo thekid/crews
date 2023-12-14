@@ -65,6 +65,6 @@ class Feed extends Listeners {
       }
     });
 
-    return ['/' => $listener];
+    return $listener;
   }
 }

@@ -2,7 +2,7 @@
   "require": {
     "xp-forge/handlebars-templates": "^3.1",
     "xp-forge/frontend": "^5.6",
-    "xp-forge/websockets": "dev-feature/open-close as 3.0.0",
+    "xp-forge/websockets": "^3.0",
     "xp-forge/mongodb": "^2.1",
     "xp-forge/redis": "^1.0",
     "xp-framework/networking": "^10.0",
