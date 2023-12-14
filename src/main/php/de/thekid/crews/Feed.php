@@ -51,8 +51,10 @@ class Feed extends Listeners {
     };
 
     // Broadcast messages to all connected clients
-    $listeners->add($events->socket(), function() use($events, $render, $listener) {
+    $logging= $this->environment->logging();
+    $listeners->add($events->socket(), function() use($logging, $events, $render, $listener) {
       foreach ($events->receive() as $group => $event) {
+        $logging->log(0, "BROADCAST<{$group}>", $event);
         $fragment= match (key($event)) {
           'insert' => sprintf('<div id="posts" hx-swap-oob="afterbegin">%s</div>', $render(current($event))),
           'update' => $render(current($event), ['swap' => 'outerHTML']),
