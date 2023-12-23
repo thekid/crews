@@ -14,7 +14,7 @@ class Group {
     $this->posts= $db->collection('posts');
   }
 
-  private function post(ObjectId $id, string $view= 'post') {
+  private function post(ObjectId $id, string $view= 'post'): View {
     return View::named('group')->fragment($view)->with($this->posts
       ->find($id)
       ->first()
@@ -23,11 +23,10 @@ class Group {
   }
 
   #[Get]
-  public function index(string $group) {
-    $id= new ObjectId($group);
-    $groups= $this->groups->find($id);
+  public function index(ObjectId $group) {
+    $groups= $this->groups->find($group);
     $posts= $this->posts->aggregate([
-      ['$match' => ['group' => $id]],
+      ['$match' => ['group' => $group]],
       ['$sort'  => ['created' => -1]],
       ['$limit' => 20],
     ]);
@@ -35,18 +34,18 @@ class Group {
   }
 
   #[Get('/{view}')]
-  public function group(string $group, string $view) {
+  public function group(ObjectId $group, string $view) {
     return View::named('group')->fragment($view)->with($this->groups
-      ->find(new ObjectId($group))
+      ->find($group)
       ->first()
       ->properties()
     );
   }
 
   #[Put]
-  public function describe(string $group, #[Param] string $description) {
+  public function describe(ObjectId $group, #[Param] string $description) {
     $result= $this->groups->run('findAndModify', [
-      'query'  => ['_id' => new ObjectId($group)],
+      'query'  => ['_id' => $group],
       'update' => ['$set' => ['description' => $description]],
       'new'    => true,  // Return modified document
       'upsert' => false,
@@ -55,9 +54,9 @@ class Group {
   }
 
   #[Post('/posts')]
-  public function create(string $group, #[Param] string $body) {
+  public function create(ObjectId $group, #[Param] string $body) {
     $insert= $this->posts->insert(new Document([
-      'group'   => new ObjectId($group),
+      'group'   => $group,
       'body'    => $body,
       'created' => Date::now(),
     ]));
@@ -66,21 +65,20 @@ class Group {
   }
 
   #[Get('/posts/{id}/{view}')]
-  public function view(string $group, string $id, string $view) {
-    return $this->post(new ObjectId($id), $view);
+  public function view(ObjectId $group, ObjectId $id, string $view) {
+    return $this->post($id, $view);
   }
 
   #[Delete('/posts/{id}')]
-  public function delete(string $group, string $id) {
-    $this->posts->delete(new ObjectId($id));
+  public function delete(ObjectId $group, ObjectId $id) {
+    $this->posts->delete($id);
     $this->events->publish($group, ['delete' => $id]);
     return View::empty()->status(204);
   }
 
   #[Put('/posts/{id}')]
-  public function update(string $group, string $id, #[Param] string $body) {
-    $post= new ObjectId($id);
-    $this->posts->update($post, ['$set' => [
+  public function update(ObjectId $group, ObjectId $id, #[Param] string $body) {
+    $this->posts->update($id, ['$set' => [
       'body'    => $body,
       'updated' => Date::now(),
     ]]);
