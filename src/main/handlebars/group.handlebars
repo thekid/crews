@@ -1,0 +1,66 @@
+{{#> layout}}
+  {{#*inline "title"}}{{group.name}}{{/inline}}
+  {{#*inline "content"}}
+    <div class="page-actions">
+      <div class="buttons">
+        <button hx-get="/group/{{group._id}}/update" hx-target="#description" hx-swap="innerHTML">🖊️ Edit</button>
+      </div>
+    </div>
+    <p id="description">
+      {{#with group}}
+        {{#*fragment "description"}}{{description}}{{/fragment}}
+      {{/with}}
+    </p>
+    <hr>
+
+    <form hx-post="/group/{{group._id}}/posts" hx-target="#posts" hx-swap="afterbegin" hx-on::after-request="this.reset()">
+      <div>
+        <label for="body">What's on your mind?</label>
+        <textarea name="body" cols="80" rows="4"></textarea>
+      </div>
+      <button type="submit">Post</button>
+    </form>
+    <br>
+
+    <div id="posts" class="posts" hx-ext="ws" ws-connect="ws://localhost:8081/{{group._id}}">
+      {{#each posts}}
+        {{#*fragment "post"}}
+          <div class="post" id="p{{_id}}" {{#with swap}}hx-swap-oob="{{.}}"{{/with}}>
+            <p {{#if (emoji body)}}class="emoji"{{/if}}>{{body}}</p>
+            
+            <div class="actions" hx-target="#p{{_id}}">
+              <small>Posted on {{date created}}{{#with updated}}, updated {{date .}}{{/with}}</small>
+
+              <div class="buttons">
+                <button hx-get="/group/{{group}}/posts/{{_id}}/edit" hx-swap="innerHTML">🖊️</button>
+                <button hx-delete="/group/{{group}}/posts/{{_id}}" hx-swap="delete swap:350ms">❌</button>
+              </div>
+            </div>
+          </div>
+        {{/fragment}}
+      {{/each}}
+    </div>
+  {{/inline}}
+  {{#*inline "edit"}}
+    <form hx-put="/group/{{group}}/posts/{{_id}}" hx-target="#p{{_id}}" hx-swap="outerHTML">
+      <div>
+        <textarea name="body" cols="80" rows="4">{{body}}</textarea>
+      </div>
+      <div>
+        <button type="submit">💾</button>
+        <button type="cancel" hx-get="/group/{{group}}/posts/{{_id}}/post">x</button>
+      </div>
+    </form>
+  {{/inline}}
+  {{#*inline "update"}}
+    <form hx-put="/group/{{_id}}" hx-target="#description" hx-swap="innerHTML">
+      <div>
+        <textarea name="description" cols="80" rows="4">{{description}}</textarea>
+      </div>
+      <div>
+        <button type="submit">💾</button>
+        <button type="cancel" hx-get="/group/{{_id}}/description">x</button>
+      </div>
+    </form>
+  {{/inline}}
+{{/layout}}

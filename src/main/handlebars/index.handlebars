@@ -1,131 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Crews</title>
-  <link href="/static/vendor.css" rel="stylesheet">
-  <link href="/static/crews.png" rel="icon">
-  <style type="text/css">
-    * {
-      font-family: 'Lato', sans-serif;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      width: max-content;
-      align-items: flex-start;
-      gap: .5rem;
-    }
-
-    input[type='text'] {
-      padding: .25rem;
-    }
-
-    textarea {
-      padding: .25rem;
-      width: 100%;
-    }
-
-    button[type='submit'] {
-      padding: .25rem .5rem;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-    }
-
-    .posts {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .post.htmx-swapping {
-      opacity: 0;
-      transition: opacity 350ms ease-in-out;
-    }
-
-    .post {
-      display: grid;
-      gap: .5rem;
-      border: 1px solid rgb(0 0 0 / .2);
-      box-shadow: 0 .25rem .25rem rgb(0 0 0 / .1);
-    }
-
-    .post > * {
-      padding: .5rem;
-    }
-
-    .post p {
-      white-space: pre-wrap;
-    }
-
-    .post p.emoji {
-      font-size: 2.25rem;
-      margin-block: .25rem;
-    }
-
-    .actions {
-      background-color: rgb(0 0 0 / .05);
-      display: grid;
-      grid-template-columns: 1fr max-content;
-    }
-
-    .actions .buttons {
-      opacity: 0;
-    }
-
-    .actions:hover .buttons {
-      opacity: 1;
-      transition: opacity 100ms ease-in-out;
-    }
-  </style>
-</head>
-<body {{#with request.values.token}}hx-headers='{"X-CSRF-Token": "{{.}}"}'{{/with}}>
-  <h1>Crews ⛵</h1>
-
-  <form hx-post="/posts" hx-target="#posts" hx-swap="afterbegin" hx-on::after-request="this.reset()">
-    <div>
-      <label for="body">What's on your mind?</label>
-      <textarea name="body" cols="80" rows="4"></textarea>
+{{#> layout}}
+  {{#*inline "title"}}Home{{/inline}}
+  {{#*inline "content"}}
+    <div class="page-actions">
+      <div class="buttons">
+        <button hx-get="/dialog/create" hx-target="body" hx-swap="beforeend">➕ Create</button>
+      </div>
     </div>
-    <button type="submit">Post</button>
-  </form>
-  <hr>
 
-  <div id="posts" class="posts" hx-ext="ws" ws-connect="ws://localhost:8081">
-    {{#each posts}}
-      {{#*fragment "post"}}
-        <div class="post" id="p{{_id}}" {{#with swap}}hx-swap-oob="{{.}}"{{/with}}>
-          <p {{#if (emoji body)}}class="emoji"{{/if}}>{{body}}</p>
-          
-          <div class="actions" hx-target="#p{{_id}}">
-            <small>Posted on {{date created}}{{#with updated}}, updated {{date .}}{{/with}}</small>
+    <div id="groups" class="groups">
+      {{#each groups}}
+        {{#*fragment "group"}}
+          <div id="g{{_id}}" class="group">
+            <h2><a href="/group/{{_id}}">{{name}}</a></h2>
+            <p>{{description}}</p>
 
-            <div class="buttons">
-              <button hx-get="/posts/{{_id}}/edit" hx-swap="innerHTML">🖊️</button>
-              <button hx-delete="/posts/{{_id}}" hx-swap="delete swap:350ms">❌</button>
+            <div class="actions">
+              <small>Created on {{date created}}</small>
             </div>
           </div>
-        </div>
-      {{/fragment}}
-    {{/each}}
-  </div>
-
-  {{#*inline "edit"}}
-    <form hx-put="/posts/{{_id}}" hx-target="#p{{_id}}" hx-swap="outerHTML">
-      <div>
-        <textarea name="body" cols="80" rows="4">{{body}}</textarea>
-      </div>
-      <div>
-        <button type="submit">💾</button>
-        <button type="cancel" hx-get="/posts/{{_id}}/post">x</button>
-      </div>
-    </form>
+        {{/fragment}}
+      {{/each}}
+    </div>
   {{/inline}}
-
-  <script src="/static/vendor.js"></script>
-</body>
-</html>
+  {{#*inline "create"}}
+    <dialog hx-on::load="this.showModal()" hx-on:close="this.remove()">
+      <h2>Create group</h2>
+      {{#*fragment "form"}}
+        <form hx-post="/create">
+          <div>
+            <label for="name">Name</label>
+            <input type="text" name="name" value="{{name}}" size="40" minlength="3" maxlength="100" required>
+            {{#with taken}}
+              <span class="error">🛑 This name is already taken!</span>
+            {{/with}}
+          </div>
+          <div>
+            <label for="body">Group description</label>
+            <textarea name="description" cols="80" rows="4"></textarea>
+          </div>
+          <div>
+            <button type="submit" hx-disabled-elt="this">Create</button>
+            <button value="cancel" hx-delete="/dialog/create" hx-target="closest dialog" hx-swap="delete">Cancel</button>
+          </div>
+        </form>
+      {{/fragment}}
+    </dialog>
+  {{/inline}}
+{{/layout}}

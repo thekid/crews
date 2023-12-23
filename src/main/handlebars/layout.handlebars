@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{> title}} - Crews</title>
+  <link href="/static/vendor.css" rel="stylesheet">
+  <link href="/static/crews.png" rel="icon">
+  <style type="text/css">
+    * {
+      font-family: 'Lato', sans-serif;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      align-items: flex-start;
+      gap: .5rem;
+    }
+
+    input[type='text'] {
+      padding: .25rem;
+    }
+
+    textarea {
+      padding: .25rem;
+      width: 100%;
+    }
+
+    button[type='submit'] {
+      padding: .25rem .5rem;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+    }
+
+    .groups {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    }
+
+    .group {
+      display: grid;
+      gap: .5rem;
+      grid-template-rows: max-content 1fr max-content;
+      border: 1px solid rgb(0 0 0 / .2);
+      box-shadow: 0 .25rem .25rem rgb(0 0 0 / .1);
+    }
+
+    .group > * {
+      padding: .5rem;
+    }
+
+    .group h2 {
+      margin: 0;
+    }
+
+    .posts {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .post.htmx-swapping {
+      opacity: 0;
+      transition: opacity 350ms ease-in-out;
+    }
+
+    .post {
+      display: grid;
+      gap: .5rem;
+      border: 1px solid rgb(0 0 0 / .2);
+      box-shadow: 0 .25rem .25rem rgb(0 0 0 / .1);
+    }
+
+    .post > * {
+      padding: .5rem;
+    }
+
+    .post p {
+      white-space: pre-wrap;
+    }
+
+    .post p.emoji {
+      font-size: 2.25rem;
+      margin-block: .25rem;
+    }
+
+    .actions {
+      background-color: rgb(0 0 0 / .05);
+      display: grid;
+      grid-template-columns: 1fr max-content;
+    }
+
+    .actions .buttons {
+      opacity: 0;
+    }
+
+    .actions:hover .buttons {
+      opacity: 1;
+      transition: opacity 100ms ease-in-out;
+    }
+
+    .breadcrumb a {
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .page-actions {
+      display: flex;
+      justify-content: right;
+      margin-bottom: 1rem;
+    }
+
+    dialog::backdrop {
+      background-color: rgb(0 0 0 / .2);
+      backdrop-filter: blur(.25rem) brightness(.9);
+    }
+  </style>
+</head>
+<body {{#with request.values.token}}hx-headers='{"X-CSRF-Token": "{{.}}"}'{{/with}}>
+  <h1 class="breadcrumb"><a href="/">Crews</a> ⛵ &raquo; <a href="{{request.uri.path}}">{{> title}}</a></h1>
+
+  {{> content}}
+
+  <script src="/static/vendor.js"></script>
+</body>
+</html>
