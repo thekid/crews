@@ -14,14 +14,6 @@ class Group {
     $this->posts= $db->collection('posts');
   }
 
-  private function post(ObjectId $id, string $view= 'post'): View {
-    return View::named('group')->fragment($view)->with($this->posts
-      ->find($id)
-      ->first()
-      ->properties()
-    );
-  }
-
   #[Get]
   public function index(ObjectId $group) {
     $groups= $this->groups->find($group);
@@ -66,7 +58,11 @@ class Group {
 
   #[Get('/posts/{id}/{view}')]
   public function view(ObjectId $group, ObjectId $id, string $view) {
-    return $this->post($id, $view);
+    return View::named('group')->fragment($view)->with($this->posts
+      ->find($id)
+      ->first()
+      ->properties()
+    );
   }
 
   #[Delete('/posts/{id}')]
