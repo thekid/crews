@@ -2,7 +2,7 @@
 
 use com\mongodb\{Database, Collection, Document};
 use util\Date;
-use web\frontend\{Handler, Get, Delete, Post, Param, View};
+use web\frontend\{Handler, Get, Post, Param, View};
 
 #[Handler('/')]
 class Index {
@@ -24,11 +24,6 @@ class Index {
   #[Get('/dialog/{dialog}')]
   public function show($dialog) {
     return View::named('index')->fragment($dialog);
-  }
-
-  #[Delete('/dialog/{dialog}')]
-  public function hide($dialog) {
-    return View::empty()->status(201);
   }
 
   #[Post('/create')]

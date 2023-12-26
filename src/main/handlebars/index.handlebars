@@ -40,7 +40,7 @@
           </div>
           <div>
             <button type="submit" hx-disabled-elt="this">Create</button>
-            <button value="cancel" hx-delete="/dialog/create" hx-target="closest dialog" hx-swap="delete">Cancel</button>
+            <button value="cancel" hx-on:click="this.closest('dialog').close()">Cancel</button>
           </div>
         </form>
       {{/fragment}}
