@@ -3,16 +3,18 @@
     "xp-forge/handlebars-templates": "^3.1",
     "xp-forge/frontend": "^6.0",
     "xp-forge/websockets": "^3.0",
-    "xp-forge/mongodb": "^2.1",
+    "xp-forge/mongodb": "^2.2",
     "xp-forge/redis": "^1.0",
+    "xp-forge/web-auth": "^3.7",
+    "xp-forge/sessions": "^3.0",
     "xp-framework/networking": "^10.0",
     "xp-framework/compiler": "^8.17",
     "php": ">=8.0.0"
   },
   "scripts": {
-    "dev": "xp -supervise web -m develop -a 0.0.0.0:8080 de.thekid.crews.App",
-    "serve": "xp -supervise web -a 0.0.0.0:8080 de.thekid.crews.App",
-    "feed": "xp -supervise ws -a 0.0.0.0:8081 de.thekid.crews.Feed",
+    "dev": "xp -supervise web -c . -m develop -a 0.0.0.0:8080 de.thekid.crews.App",
+    "serve": "xp -supervise web -c . -a 0.0.0.0:8080 de.thekid.crews.App",
+    "feed": "xp -supervise ws -c . -a 0.0.0.0:8081 de.thekid.crews.Feed",
     "post-update-cmd": "xp bundle src/main/webapp/static"
   }
 }

@@ -10,10 +10,11 @@ use xp\websockets\Handler;
 class Feed extends Listeners {
 
   public function serve($listeners) {
-    $conn= new MongoConnection($this->environment->variable('MONGO_URI'));
-    $events= new Events(new RedisProtocol($this->environment->variable('REDIS_URI')));
+    $config= $this->environment->properties('config');
+    $conn= new MongoConnection($config->readString('mongo', 'connect'));
+    $events= new Events(new RedisProtocol($config->readString('redis', 'connect')));
+    $db= $conn->database($config->readString('mongo', 'database'));
     $templates= new Templating(new Path('src/main/handlebars'));
-    $db= $conn->database($this->environment->variable('MONGO_DB'));
 
     $listener= new class($events) extends Listener {
       public $subscribers= [];
@@ -56,10 +57,12 @@ class Feed extends Listeners {
     $listeners->add($events->socket(), function() use($logging, $events, $render, $listener) {
       foreach ($events->receive() as $group => $event) {
         $logging->log(0, "BROADCAST<{$group}>", $event);
-        $fragment= match (key($event)) {
-          'insert' => sprintf('<div id="posts" hx-swap-oob="afterbegin">%s</div>', $render(current($event))),
-          'update' => $render(current($event), ['swap' => 'outerHTML']),
-          'delete' => $render(null, ['_id' => current($event), 'swap' => 'delete']),
+
+        $ctx= ['request' => ['values' => ['user' => ['_id' => $event['user']]]]];
+        $fragment= match ($event['kind']) {
+          'insert' => "<div id='posts' hx-swap-oob='afterbegin'>{$render($event['argument'], $ctx)}</div>"
+          'update' => $render($event['argument'], ['swap' => 'outerHTML', ...$ctx]),
+          'delete' => $render(null, ['_id' => $event['argument'], 'swap' => 'delete', ...$ctx]),
         };
 
         foreach ($listener->subscribers[$group] as $connection) {

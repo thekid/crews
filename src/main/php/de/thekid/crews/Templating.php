@@ -11,7 +11,14 @@ class Templating extends Handlebars {
     parent::__construct($templates, [
       new Dates(null),
       new Functions([
-        'emoji' => fn($node, $context, $options) => preg_match('/^\\p{So}+$/u', $options[0]),
+        'emoji'   => fn($node, $context, $options) => preg_match(
+          '/^\\p{So}+$/u',
+          $options[0],
+        ),
+        'is-user' => fn($node, $context, $options) => 0 === strcmp(
+          $options[0]['id'],
+          $context->lookup('request.values.user._id'),
+        )
       ])
     ]);
   }

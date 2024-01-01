@@ -1,8 +1,9 @@
 <?php namespace de\thekid\crews\web;
 
 use com\mongodb\{Database, Collection, Document};
+use de\thekid\crews\User;
 use util\Date;
-use web\frontend\{Handler, Get, Post, Param, View};
+use web\frontend\{Handler, Get, Post, Param, Value, View};
 
 #[Handler('/')]
 class Index {
@@ -27,7 +28,7 @@ class Index {
   }
 
   #[Post('/create')]
-  public function create(#[Param] $name, #[Param] $description) {
+  public function create(#[Value] User $user, #[Param] $name, #[Param] $description) {
     $name= trim($name);
 
     // Verify name is unique, return "Multiple Choices" status code
@@ -42,6 +43,7 @@ class Index {
     $insert= $this->groups->insert(new Document([
       'name'        => $name,
       'description' => $description,
+      'owner'       => $user->reference(),
       'created'     => Date::now(),
     ]));
     return View::empty()->header('HX-Redirect', "/group/{$insert->id()}");

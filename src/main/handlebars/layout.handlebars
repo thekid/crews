@@ -11,6 +11,26 @@
       font-family: 'Rubik', sans-serif;
     }
 
+    body {
+      background-color: #ede6e1;
+      margin: 0;
+    }
+
+    nav {
+      background-color: white;
+      padding: 1rem;
+      box-shadow: 0 .25rem .25rem rgb(0 0 0 / .1);
+    }
+
+    #user {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    main {
+      padding: 0 1rem;
+    }
+
     form {
       display: flex;
       flex-direction: column;
@@ -49,10 +69,11 @@
       grid-template-rows: max-content 1fr max-content;
       border: 1px solid rgb(0 0 0 / .2);
       box-shadow: 0 .25rem .25rem rgb(0 0 0 / .1);
+      background-color: white;
     }
 
     .group > * {
-      padding: .5rem;
+      padding: .75rem;
     }
 
     .group h2 {
@@ -74,6 +95,7 @@
       gap: .5rem;
       border: 1px solid rgb(0 0 0 / .2);
       box-shadow: 0 .25rem .25rem rgb(0 0 0 / .1);
+      background-color: white;
     }
 
     .post > * {
@@ -125,10 +147,14 @@
   </style>
 </head>
 <body {{#with request.values.token}}hx-headers='{"X-CSRF-Token": "{{.}}"}'{{/with}}>
-  <h1 class="breadcrumb"><a href="/">Crews</a> ⛵ &raquo; <a href="{{request.uri.path}}">{{> title}}</a></h1>
+  <nav>
+    <div id="user">{{request.values.user.first}}</div>
+  </nav>
 
-  {{> content}}
-
+  <main>
+    <h1 class="breadcrumb"><a href="/">Crews</a> ⛵ &raquo; <a href="{{request.uri.path}}">{{> title}}</a></h1>
+    {{> content}}
+  </main>
   <script src="/static/vendor.js"></script>
 </body>
 </html>

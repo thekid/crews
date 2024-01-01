@@ -10,13 +10,14 @@ class Events {
   /** @return peer.Socket */
   public function socket() { return $this->redis->socket(); }
 
-  /** Publish an event in a given group */
-  public function publish(string|ObjectId $group, array<string, mixed> $event): void {
-    $pass= '';
-    foreach ($event as $key => $value) {
-      $pass.= '&'.urlencode($key).'='.urlencode($value);
-    }
-    $this->redis->command('PUBLISH', (string)$group, substr($pass, 1));
+  /** Publish an event of the form `[kind => argument]` in a given group */
+  public function publish(User $user, string|ObjectId $group, array<string, mixed> $event): void {
+    $this->redis->command('PUBLISH', (string)$group, sprintf(
+      'user=%s&kind=%s&argument=%s',
+      $user->id,
+      key($event),
+      current($event)
+    ));
   }
 
   /** Subscribe to updates from a given group */

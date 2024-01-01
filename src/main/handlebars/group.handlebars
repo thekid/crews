@@ -2,9 +2,11 @@
   {{#*inline "title"}}{{group.name}}{{/inline}}
   {{#*inline "content"}}
     <div class="page-actions">
-      <div class="buttons">
-        <button hx-get="/group/{{group._id}}/update" hx-target="#description" hx-swap="innerHTML">🖊️ Edit</button>
-      </div>
+      {{#if (is-user group.owner)}}
+        <div class="buttons">
+          <button hx-get="/group/{{group._id}}/update" hx-target="#description" hx-swap="innerHTML">🖊️ Edit</button>
+        </div>
+      {{/if}}
     </div>
     <p id="description">
       {{#with group}}
@@ -29,12 +31,14 @@
             <p {{#if (emoji body)}}class="emoji"{{/if}}>{{body}}</p>
             
             <div class="actions" hx-target="#p{{_id}}">
-              <small>Posted on {{date created}}{{#with updated}}, updated {{date .}}{{/with}}</small>
+              <small>Posted by <b>{{editor.name}}</b> on {{date created}}{{#with updated}}, updated {{date .}}{{/with}}</small>
 
-              <div class="buttons">
-                <button hx-get="/group/{{group}}/posts/{{_id}}/edit" hx-swap="innerHTML">🖊️</button>
-                <button hx-delete="/group/{{group}}/posts/{{_id}}" hx-swap="delete swap:350ms">❌</button>
-              </div>
+              {{#if (is-user editor)}}
+                <div class="buttons">
+                  <button hx-get="/group/{{group}}/posts/{{_id}}/edit" hx-swap="innerHTML">🖊️</button>
+                  <button hx-delete="/group/{{group}}/posts/{{_id}}" hx-swap="delete swap:350ms">❌</button>
+                </div>
+              {{/if}}
             </div>
           </div>
         {{/fragment}}
