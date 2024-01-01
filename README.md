@@ -10,7 +10,7 @@ Lightweight asynchronous communication for teams.
 
 ```ini
 [mongo]
-connect=mongo://user:password@localhost/one
+connect=mongodb://user:password@localhost/one
 database=crews
 
 [redis]
