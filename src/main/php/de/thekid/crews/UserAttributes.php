@@ -1,6 +1,10 @@
 <?php namespace de\thekid\crews;
 
-/** Maps user attributes using a handlebars-style syntax */
+/**
+ * Maps user attributes using a handlebars-style syntax
+ *
+ * @test  de.thekid.crews.unittest.UserAttributesTest
+ */
 class UserAttributes {
 
   public function __construct(private array<string, string> $mapping) { }
