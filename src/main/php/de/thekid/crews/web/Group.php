@@ -1,9 +1,9 @@
 <?php namespace de\thekid\crews\web;
 
 use com\mongodb\{Database, Collection, Document, ObjectId};
-use de\thekid\crews\Events;
+use de\thekid\crews\{Events, User};
 use util\Date;
-use web\frontend\{Handler, Get, Post, Delete, Put, View, Param};
+use web\frontend\{Handler, Get, Post, Delete, Param, Put, Value, View};
 
 #[Handler('/group/{group}')]
 class Group {
@@ -35,24 +35,20 @@ class Group {
   }
 
   #[Put]
-  public function describe(ObjectId $group, #[Param] string $description) {
-    $result= $this->groups->run('findAndModify', [
-      'query'  => ['_id' => $group],
-      'update' => ['$set' => ['description' => $description]],
-      'new'    => true,  // Return modified document
-      'upsert' => false,
-    ]);
-    return View::named('group#description')->with($result->value()['value']);
+  public function describe(#[Value] User $user, ObjectId $group, #[Param] string $description) {
+    $result= $this->groups->modify($user->where($group, 'owner'), ['$set' => ['description' => $description]]);
+    return View::named('group#description')->with($result->document()->properties());
   }
 
   #[Post('/posts')]
-  public function create(ObjectId $group, #[Param] string $body) {
+  public function create(#[Value] User $user, ObjectId $group, #[Param] string $body) {
     $insert= $this->posts->insert(new Document([
       'group'   => $group,
       'body'    => $body,
+      'editor'  => $user->reference(),
       'created' => Date::now(),
     ]));
-    $this->events->publish($group, ['insert' => $insert->id()]);
+    $this->events->publish($user, $group, ['insert' => $insert->id()]);
     return View::empty()->status(204);
   }
 
@@ -66,19 +62,19 @@ class Group {
   }
 
   #[Delete('/posts/{id}')]
-  public function delete(ObjectId $group, ObjectId $id) {
-    $this->posts->delete($id);
-    $this->events->publish($group, ['delete' => $id]);
+  public function delete(#[Value] User $user, ObjectId $group, ObjectId $id) {
+    $this->posts->delete($user->where($id, 'editor'));
+    $this->events->publish($user, $group, ['delete' => $id]);
     return View::empty()->status(204);
   }
 
   #[Put('/posts/{id}')]
-  public function update(ObjectId $group, ObjectId $id, #[Param] string $body) {
-    $this->posts->update($id, ['$set' => [
+  public function update(#[Value] User $user, ObjectId $group, ObjectId $id, #[Param] string $body) {
+    $this->posts->update($user->where($id, 'editor'), ['$set' => [
       'body'    => $body,
       'updated' => Date::now(),
     ]]);
-    $this->events->publish($group, ['update' => $id]);
+    $this->events->publish($user, $group, ['update' => $id]);
     return View::empty()->status(204);
   }
 }
