@@ -1,13 +1,14 @@
 <?php namespace de\thekid\crews\web;
 
 use com\mongodb\{Database, Collection, Document, ObjectId};
-use de\thekid\crews\{Events, User};
+use de\thekid\crews\{Markup, Events, User};
 use util\Date;
 use web\frontend\{Handler, Get, Post, Delete, Param, Put, Value, View};
 
 #[Handler('/group/{group}')]
 class Group {
   private Collection $groups, $posts;
+  private $markup= new Markup();
 
   public function __construct(Database $db, private Events $events) {
     $this->groups= $db->collection('groups');
@@ -36,7 +37,9 @@ class Group {
 
   #[Put]
   public function describe(#[Value] User $user, ObjectId $group, #[Param] string $description) {
-    $result= $this->groups->modify($user->where($group, 'owner'), ['$set' => ['description' => $description]]);
+    $result= $this->groups->modify($user->where($group, 'owner'), ['$set' => [
+      'description' => $this->markup->transform($description),
+    ]]);
     return View::named('group#description')->with($result->document()->properties());
   }
 
@@ -44,7 +47,7 @@ class Group {
   public function create(#[Value] User $user, ObjectId $group, #[Param] string $body) {
     $insert= $this->posts->insert(new Document([
       'group'   => $group,
-      'body'    => $body,
+      'body'    => $this->markup->transform($body),
       'editor'  => $user->reference(),
       'created' => Date::now(),
     ]));
@@ -71,7 +74,7 @@ class Group {
   #[Put('/posts/{id}')]
   public function update(#[Value] User $user, ObjectId $group, ObjectId $id, #[Param] string $body) {
     $this->posts->update($user->where($id, 'editor'), ['$set' => [
-      'body'    => $body,
+      'body'    => $this->markup->transform($body),
       'updated' => Date::now(),
     ]]);
     $this->events->publish($user, $group, ['update' => $id]);
