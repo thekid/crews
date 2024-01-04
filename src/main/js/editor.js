@@ -82,7 +82,12 @@ class Editor {
     // Synchronize hidden field
     $editable.addEventListener('input', e => {
       $field.value = $editable.innerHTML;
-    })
+    });
+
+    // If the enclosing form is being reset, reset the editable
+    $editable.closest('form').addEventListener('reset', e => {
+      $editable.innerText= '';
+    });
 
     // Transform HTML, inserting text as-is. Todo: images, see
     // https://web.dev/patterns/clipboard/paste-images/
