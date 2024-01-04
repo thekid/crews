@@ -108,12 +108,26 @@
       }
     }
 
-    .group h2, .group p {
+    .group h2 {
       padding-inline: 1rem;
+      margin: 0;
     }
 
-    .group h2 {
-      margin: 0;
+    .group .description {
+      padding-inline: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+      & * {
+        font-size: 1rem;
+        padding-inline: 0;
+      }
+
+      & *:not(:first-child) {
+        display: none;
+      }
     }
 
     .posts {
