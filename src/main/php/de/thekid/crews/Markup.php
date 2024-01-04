@@ -80,13 +80,12 @@ class Markup {
     libxml_set_external_entity_loader(fn() => null);
 
     // Use https://wiki.php.net/rfc/domdocument_html5_parser for PHP 8.4+
-    $html= "<html><head><meta charset='utf-8'></head><body>{$input}</body></html>";
     try {
       if (PHP_VERSION_ID >= 80400) {
-        $doc= HTMLDocument::createFromString($html);
+        $doc= HTMLDocument::createFromString("<!DOCTYPE html><html><body>{$input}</body></html>", 0, 'utf-8');
       } else {
         $doc= new DOMDocument('1.0', 'utf-8');
-        $doc->loadHTML($html, LIBXML_NONET);
+        $doc->loadHTML("<html><head><meta charset='utf-8'></head><body>{$input}</body></html>", LIBXML_NONET);
       }
     } finally {
       libxml_use_internal_errors($useInternal);
