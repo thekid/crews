@@ -29,7 +29,7 @@ class Markup {
   };
 
   html(text) {
-    return text.replace(/<>&'"/, m => `&#${m.charCodeAt(0)};`);
+    return text.replace(/[<>&'"]/g, m => `&#${m.charCodeAt(0)};`);
   }
 
   transform(nodes) {
