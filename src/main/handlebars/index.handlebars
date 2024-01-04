@@ -39,7 +39,7 @@
           </div>
           <div>
             <label for="body">Group description</label>
-            <textarea name="description" cols="80" rows="4"></textarea>
+            {{> components/editor id="group" field="description"}}
           </div>
           <div>
             <button type="submit" hx-disabled-elt="this">Create</button>

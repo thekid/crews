@@ -11,6 +11,10 @@
       font-family: 'Rubik', sans-serif;
     }
 
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     body {
       background-color: #ede6e1;
       margin: 0;
@@ -34,7 +38,7 @@
     form {
       display: flex;
       flex-direction: column;
-      width: max-content;
+      width: 100%;
       align-items: flex-start;
       gap: .5rem;
     }
@@ -46,6 +50,25 @@
     textarea {
       padding: .25rem;
       width: 100%;
+    }
+
+    div.editor {
+      width: 100%;
+    }
+
+    div[contenteditable] {
+      background-color: white;
+      padding: .25rem;
+      width: 100%;
+      outline: 1px solid black;
+    }
+
+    div[contenteditable] p {
+      margin: 0;
+    }
+
+    div[contenteditable] p + p {
+      margin-block-start: 1rem;
     }
 
     button[type='submit'] {
@@ -117,8 +140,8 @@
       padding: .5rem;
     }
 
-    .post p {
-      white-space: pre-wrap;
+    .post p:empty {
+      display: none;
     }
 
     .post p.emoji {
@@ -173,5 +196,8 @@
     {{> content}}
   </main>
   <script src="/static/vendor.js"></script>
+  {{#> scripts}}
+    <!-- Defaults to empty -->
+  {{/scripts}}
 </body>
 </html>

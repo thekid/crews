@@ -1,13 +1,14 @@
 <?php namespace de\thekid\crews\web;
 
 use com\mongodb\{Database, Collection, Document};
-use de\thekid\crews\User;
+use de\thekid\crews\{User, Markup};
 use util\Date;
 use web\frontend\{Handler, Get, Post, Param, Value, View};
 
 #[Handler('/')]
 class Index {
   private Collection $groups;
+  private $markup= new Markup();
 
   public function __construct(Database $db) {
     $this->groups= $db->collection('groups');
@@ -42,7 +43,7 @@ class Index {
     // Create, then trigger redirect
     $insert= $this->groups->insert(new Document([
       'name'        => $name,
-      'description' => $description,
+      'description' => $this->markup->transform($description),
       'owner'       => $user->reference(),
       'created'     => Date::now(),
     ]));
