@@ -1,6 +1,7 @@
 <?php namespace de\thekid\crews\unittest;
 
 use de\thekid\crews\Markup;
+use test\verify\Runtime;
 use test\{Assert, Test, Values};
 
 class MarkupTest {
@@ -123,15 +124,30 @@ class MarkupTest {
     );
   }
 
-  #[Test]
-  public function svg_mutation_xss() {
+  #[Test, Runtime(php: '<8.4-dev')]
+  public function svg_mutation_xss_html4() {
     $exploit= '<svg></p><style><a id="</style><img src=1 onerror=alert(1)>">';
     Assert::equals('&lt;a id=&quot;&quot;&gt;', new Markup()->transform($exploit));
   }
 
-  #[Test]
-  public function namespace_confusion_xss() {
+  #[Test, Runtime(php: '>=8.4-dev')]
+  public function svg_mutation_xss_html5() {
+    $exploit= '<svg></p><style><a id="</style><img src=1 onerror=alert(1)>">';
+    Assert::equals('', new Markup()->transform($exploit));
+  }
+
+  #[Test, Runtime(php: '<8.4-dev')]
+  public function namespace_confusion_xss_html4() {
     $exploit= '<form><math><mtext></form><form><mglyph><style></math><img src onerror=alert(1)>';
     Assert::equals('&lt;img src onerror=alert(1)&gt;', new Markup()->transform($exploit));
+  }
+
+  #[Test, Runtime(php: '>=8.4-dev')]
+  public function namespace_confusion_xss_html5() {
+    $exploit= '<form><math><mtext></form><form><mglyph><style></math><img src onerror=alert(1)>';
+    Assert::equals(
+      '&lt;/math&gt;&lt;img src onerror=alert(1)&gt;&lt;/body&gt;&lt;/html&gt;',
+      new Markup()->transform($exploit),
+    );
   }
 }

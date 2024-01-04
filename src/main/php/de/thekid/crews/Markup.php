@@ -1,11 +1,13 @@
 <?php namespace de\thekid\crews;
 
 use DOMDocument;
+use DOM\HTMLDocument;
 
 /**
  * Transforms HTML markup to a subset we can render in the pages
  *
  * @test  de.thekid.crews.unittest.MarkupTest
+ * @see   https://wiki.php.net/rfc/domdocument_html5_parser
  * @see   https://github.com/php/php-src/security/advisories/GHSA-3qrf-m4j2-pcrr
  * @see   https://research.securitum.com/dompurify-bypass-using-mxss/
  * @see   https://research.securitum.com/mutation-xss-via-mathml-mutation-dompurify-2-0-17-bypass/
@@ -77,12 +79,15 @@ class Markup {
     $entityLoader= PHP_VERSION_ID >= 80200 ? libxml_get_external_entity_loader() : null;
     libxml_set_external_entity_loader(fn() => null);
 
+    // Use https://wiki.php.net/rfc/domdocument_html5_parser for PHP 8.4+
+    $html= "<html><head><meta charset='utf-8'></head><body>{$input}</body></html>";
     try {
-      $doc= new DOMDocument('1.0', 'utf-8');
-      $doc->loadHTML(
-        "<html><head><meta charset='utf-8'></head><body>{$input}</body></html>",
-        LIBXML_NONET
-      );
+      if (PHP_VERSION_ID >= 80400) {
+        $doc= HTMLDocument::createFromString($html);
+      } else {
+        $doc= new DOMDocument('1.0', 'utf-8');
+        $doc->loadHTML($html, LIBXML_NONET);
+      }
     } finally {
       libxml_use_internal_errors($useInternal);
       $entityLoader && libxml_set_external_entity_loader($entityLoader);
