@@ -8,6 +8,7 @@ use DOMDocument;
  * @test  de.thekid.crews.unittest.MarkupTest
  * @see   https://research.securitum.com/dompurify-bypass-using-mxss/
  * @see   https://research.securitum.com/mutation-xss-via-mathml-mutation-dompurify-2-0-17-bypass/
+ * @see   https://knowledge-base.secureflag.com/vulnerabilities/xml_injection/xml_entity_expansion_php.html
  */
 class Markup {
   const REMOVE= false;
