@@ -43,19 +43,27 @@ class MarkupTest {
     Assert::equals($expected, $fixture->transform($input));
   }
 
-  #[Test]
-  public function text_escaping() {
-    $fixture= new Markup();
-    Assert::equals('1 &lt; 2', $fixture->transform('1 < 2'));
-  }
-
   #[Test, Values([
-    ['Test &lt;&amp;&quot;&gt;&euro;&unknown; Works'],
+    ['1 < 2'],
+    ['1 & 2'],
     ['Test <&">&euro;&unknown; Works'],
   ])]
-  public function html_entities_are_escaped($input) {
+  public function does_not_contain_unescaped_entities($input) {
     $fixture= new Markup();
-    Assert::equals('Test &lt;&amp;&quot;&gt;€&amp;unknown; Works', $fixture->transform($input));
+    $transformed= $fixture->transform($input);
+
+    foreach (['/</', '/>/', '/"/', '/&(?![a-z]+;)/'] as $pattern) {
+      Assert::equals(0, preg_match($pattern, $fixture->transform($input)));
+    }
+  }
+
+  #[Test]
+  public function html_entities_are_escaped() {
+    $fixture= new Markup();
+    Assert::equals(
+      'Test &lt;&amp;&quot;&gt;€&amp;unknown; Works',
+      $fixture->transform('Test &lt;&amp;&quot;&gt;&euro;&unknown; Works')
+    );
   }
 
   #[Test, Values([
