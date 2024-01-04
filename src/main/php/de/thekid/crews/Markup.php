@@ -72,7 +72,7 @@ class Markup {
 
     libxml_clear_errors();
     $useInternal= libxml_use_internal_errors(true);
-    $entityLoader= libxml_get_external_entity_loader();
+    $entityLoader= PHP_VERSION_ID >= 80200 ? libxml_get_external_entity_loader() : null;
     libxml_set_external_entity_loader(fn() => null);
 
     try {
@@ -83,7 +83,7 @@ class Markup {
       );
     } finally {
       libxml_use_internal_errors($useInternal);
-      libxml_set_external_entity_loader($entityLoader);
+      $entityLoader && libxml_set_external_entity_loader($entityLoader);
     }
 
     return $this->process($doc->getElementsByTagName('body')->item(0)->childNodes);
