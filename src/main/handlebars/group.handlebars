@@ -18,7 +18,7 @@
     <form hx-post="/group/{{group._id}}/posts" hx-target="#posts" hx-swap="afterbegin" hx-on::after-request="this.reset()">
       <div>
         <label for="body">What's on your mind?</label>
-        {{> components/editor id="post" field="body"}}
+        {{> traits/editor id="post" field="body"}}
       </div>
       <button type="submit">Post</button>
     </form>
@@ -48,7 +48,7 @@
   {{#*inline "edit"}}
     <form hx-put="/group/{{group}}/posts/{{_id}}" hx-target="#p{{_id}}" hx-swap="outerHTML">
       <div>
-        {{> components/editor id=_id field="body" value=body}}
+        {{> traits/editor id=_id field="body" value=body}}
       </div>
       <div>
         <button type="submit">💾</button>
@@ -58,7 +58,7 @@
   {{/inline}}
   {{#*inline "update"}}
     <form hx-put="/group/{{_id}}" hx-target="#description" hx-swap="innerHTML">
-      {{> components/editor id=_id field="description" value=description}}
+      {{> traits/editor id=_id field="description" value=description}}
       <div>
         <button type="submit">💾</button>
         <button type="cancel" hx-get="/group/{{_id}}/description">x</button>
