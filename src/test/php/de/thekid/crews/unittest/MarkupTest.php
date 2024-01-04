@@ -113,8 +113,8 @@ class MarkupTest {
   public function does_not_parse_doctype_with($entity) {
     $fixture= new Markup();
     Assert::equals(
-      "\n]&gt;\n<p>&amp;xxe;</p>",
-      $fixture->transform("<!DOCTYPE results [\n".$entity."\n]>\n<p>&xxe;</p>")
+      "]&gt;\n<p>&amp;xxe;</p>",
+      ltrim($fixture->transform("<!DOCTYPE results [\n".$entity."\n]>\n<p>&xxe;</p>"))
     );
   }
 
