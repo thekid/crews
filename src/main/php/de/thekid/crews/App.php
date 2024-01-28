@@ -5,7 +5,7 @@ use io\redis\RedisProtocol;
 use web\Application;
 use web\auth\SessionBased;
 use web\auth\oauth\{OAuth2Flow, BySecret};
-use web\frontend\{Frontend, AssetsFrom, HandlersIn};
+use web\frontend\{Frontend, AssetsFrom, HandlersIn, HtmxFlow};
 use web\session\InFileSystem;
 
 /** Web frontend */
@@ -28,7 +28,7 @@ class App extends Application {
       '/',
       $config->readArray('oauth', 'scopes'),
     );
-    $auth= new SessionBased($flow, $sessions, $flow->fetchUser($config->readString('oauth', 'userinfo'))
+    $auth= new SessionBased(new HtmxFlow($flow), $sessions, $flow->fetchUser($config->readString('oauth', 'userinfo'))
       ->map(new UserAttributes($config->readSection('user')))
       ->map(fn($user) => $db->collection('users')
         ->modify(['handle' => $user['handle']], ['$set' => $user], upsert: true)
