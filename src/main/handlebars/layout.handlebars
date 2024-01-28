@@ -210,6 +210,14 @@
     {{> content}}
   </main>
   <script src="/static/vendor.js"></script>
+  <script type="module">
+    window.addEventListener('authenticationexpired', e => {
+      if (confirm('Authentication expired. Do you want to re-authenticate?')) {
+        window.location.reload();
+        return;
+      }
+    });
+  </script>
   {{#> scripts}}
     <!-- Defaults to empty -->
   {{/scripts}}
