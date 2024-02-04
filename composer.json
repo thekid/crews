@@ -10,7 +10,7 @@
     "xp-forge/websockets": "^3.0",
     "xp-forge/mongodb": "^2.2",
     "xp-forge/redis": "^1.0",
-    "xp-forge/web-auth": "^3.7",
+    "xp-forge/web-auth": "^4.0",
     "xp-forge/sessions": "^3.0",
     "xp-framework/networking": "^10.0",
     "xp-framework/compiler": "^8.17",
