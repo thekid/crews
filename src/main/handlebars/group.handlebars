@@ -8,17 +8,17 @@
         </div>
       {{/if}}
     </div>
-    <p id="description">
+    <div id="description">
       {{#with group}}
-        {{#*fragment "description"}}{{description}}{{/fragment}}
+        {{#*fragment "description"}}{{& description}}{{/fragment}}
       {{/with}}
-    </p>
+    </div>
     <hr>
 
     <form hx-post="/group/{{group._id}}/posts" hx-target="#posts" hx-swap="afterbegin" hx-on::after-request="this.reset()">
       <div>
         <label for="body">What's on your mind?</label>
-        <textarea name="body" cols="80" rows="4"></textarea>
+        {{> traits/editor id="post" field="body"}}
       </div>
       <button type="submit">Post</button>
     </form>
@@ -28,7 +28,7 @@
       {{#each posts}}
         {{#*fragment "post"}}
           <div class="post" id="p{{_id}}" {{#with swap}}hx-swap-oob="{{.}}"{{/with}}>
-            <p {{#if (emoji body)}}class="emoji"{{/if}}>{{body}}</p>
+            <p {{#if (emoji body)}}class="emoji"{{/if}}>{{& body}}</p>
             
             <div class="actions" hx-target="#p{{_id}}">
               <small>Posted by <b>{{editor.name}}</b> on {{date created}}{{#with updated}}, updated {{date .}}{{/with}}</small>
@@ -48,7 +48,7 @@
   {{#*inline "edit"}}
     <form hx-put="/group/{{group}}/posts/{{_id}}" hx-target="#p{{_id}}" hx-swap="outerHTML">
       <div>
-        <textarea name="body" cols="80" rows="4">{{body}}</textarea>
+        {{> traits/editor id=_id field="body" value=body}}
       </div>
       <div>
         <button type="submit">💾</button>
@@ -58,9 +58,7 @@
   {{/inline}}
   {{#*inline "update"}}
     <form hx-put="/group/{{_id}}" hx-target="#description" hx-swap="innerHTML">
-      <div>
-        <textarea name="description" cols="80" rows="4">{{description}}</textarea>
-      </div>
+      {{> traits/editor id=_id field="description" value=description}}
       <div>
         <button type="submit">💾</button>
         <button type="cancel" hx-get="/group/{{_id}}/description">x</button>
