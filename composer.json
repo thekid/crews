@@ -6,18 +6,18 @@
   "require": {
     "xp-forge/handlebars-templates": "^3.1",
     "xp-forge/frontend": "^6.0",
-    "xp-forge/htmx": "^0.1",
+    "xp-forge/htmx": "^0.2",
     "xp-forge/websockets": "^3.0",
     "xp-forge/mongodb": "^2.2",
     "xp-forge/redis": "^1.0",
     "xp-forge/web-auth": "^4.0",
     "xp-forge/sessions": "^3.0",
     "xp-framework/networking": "^10.0",
-    "xp-framework/compiler": "^8.17",
+    "xp-framework/compiler": "^9.0",
     "php": ">=8.0.0"
   },
   "require-dev": {
-    "xp-framework/test": "^1.5"
+    "xp-framework/test": "^2.0"
   },
   "scripts": {
     "dev": "xp -supervise web -c . -m develop -a 0.0.0.0:8080 de.thekid.crews.App",
