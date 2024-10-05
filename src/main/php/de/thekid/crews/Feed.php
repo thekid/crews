@@ -35,7 +35,7 @@ class Feed extends Listeners {
         // NOOP
       }
 
-      public function close($conn) {
+      public function close($conn, $code, $reason) {
         $group= basename($conn->path());
         unset($this->subscribers[$group][$conn->id()]);
         if (empty($this->subscribers[$group])) {
