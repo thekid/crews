@@ -15,7 +15,7 @@
               <img src="https://picsum.photos/536/354?random={{_id}}" width="536" height="354" alt="{{name}}">
             </a>
             <h2><a href="/group/{{_id}}">{{name}}</a></h2>
-            <p>{{description}}</p>
+            <div class="description">{{& description}}</div>
 
             <div class="actions">
               <small>Created by <b>{{owner.name}}</b> on {{date created format="d.m.Y"}}</small>
@@ -39,7 +39,7 @@
           </div>
           <div>
             <label for="body">Group description</label>
-            <textarea name="description" cols="80" rows="4"></textarea>
+            {{> traits/editor id="group" field="description"}}
           </div>
           <div>
             <button type="submit" hx-disabled-elt="this">Create</button>

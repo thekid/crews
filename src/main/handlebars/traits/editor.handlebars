@@ -1,0 +1,15 @@
+<div class="editor" id="editor-{{id}}">
+  <input type="hidden" name="{{field}}" value="{{value}}">
+  <div contenteditable="true">{{& value}}</div>
+  <div class="buttons">
+    <button name="bold">B</button>
+    <button name="italic">I</button>
+    <button name="strikeThrough">S</button>
+    <span> | </span>
+    <button name="h2" data-command="formatBlock">Heading</button>
+    <button name="h3" data-command="formatBlock">Subtitle</button>
+    <button name="p" data-command="formatBlock">Paragraph</button>
+    <button name="pre" data-command="formatBlock">Preformatted</button>
+  </div>
+</div>
+<script type="module">new Editor(document.getElementById('editor-{{id}}'));</script>

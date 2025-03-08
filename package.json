@@ -3,6 +3,10 @@
     "htmx.org": "^1.9"
   },
   "bundles": {
-    "vendor": {"htmx.org": ["dist/htmx.min.js", "dist/ext/ws.js"], "fonts://display=swap": "Rubik:wght@300"}
+    "vendor": {
+      "htmx.org": ["dist/htmx.min.js", "dist/ext/ws.js"],
+      "fonts://display=swap": ["Rubik:wght@300", "JetBrains+Mono:wght@400"],
+      ".": ["src/main/js/editor.js"]
+    }
   }
 }
